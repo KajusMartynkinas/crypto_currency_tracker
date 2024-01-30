@@ -11,8 +11,8 @@ import matplotlib.pyplot as plt
 # Initialize df as an empty DataFrame globally
 df = pd.DataFrame()
 
-def api_runner():
-  global df
+# Running the API runner multiple times
+for i in range(5):
   url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest'
   parameters = {
     'start': '1',
@@ -68,6 +68,7 @@ def api_runner():
   def lineplot():
     sns.set_theme(style='darkgrid')
     sns.lineplot(x='timestamp', y='quote.USD.price', data = df8)
+    plt.show()
   # Export to CSV
   print(df8)
 
@@ -76,9 +77,8 @@ def api_runner():
   # else:
   #   df5.to_csv('CryptoMarket.csv', mode='a', header=False)
 
-# Running the API runner multiple times
-for i in range(3):
-  api_runner()
+
+  lineplot()
   print('API runner completed')
-  sleep(10)
+  sleep(5)
 exit()
