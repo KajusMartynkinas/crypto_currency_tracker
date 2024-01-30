@@ -4,6 +4,8 @@ from requests.exceptions import ConnectionError, Timeout, TooManyRedirects
 import json
 import pandas as pd
 from time import sleep
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 
 # Initialize df as an empty DataFrame globally
@@ -14,7 +16,7 @@ def api_runner():
   url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest'
   parameters = {
     'start': '1',
-    'limit': '20',
+    'limit': '15',
     'convert': 'USD'
   }
   headers = {
@@ -41,6 +43,13 @@ def api_runner():
     df5 = df4.to_frame(name='values')
     df6 = df5.reset_index()
     df7 = df6.rename(columns = {'level_1': 'percent_change'})
+    df7['percent_change'] = df7['percent_change'].replace(['quote.USD.percent_change_1h', 'quote.USD.percent_change_24h','quote.USD.percent_change_7d',
+                                         'quote.USD.percent_change_30d', 'quote.USD.percent_change_60d', 'quote.USD.percent_change_90d'],
+                                        ['1h','24h','7d','30d','60d','90d'])
+
+    df8 = df[['name','quote.USD.price', 'timestamp']]
+    df8 = df8.query("name == 'Bitcoin'")
+
 
   except (ConnectionError, Timeout, TooManyRedirects) as e:
     print(e)
@@ -51,10 +60,16 @@ def api_runner():
   pd.set_option('display.width', None)
   pd.set_option('display.float_format', lambda x: '%.5f' % x)
 
+  def catplot():
+    plt.style.use('dark_background')
+    sns.catplot(x='percent_change', y ='values', hue = 'name', data = df7, kind = 'point')
+    plt.show()
 
-
+  def lineplot():
+    sns.set_theme(style='darkgrid')
+    sns.lineplot(x='timestamp', y='quote.USD.price', data = df8)
   # Export to CSV
-  print(df7)
+  print(df8)
 
   # if not os.path.isfile(r'C:\Users\Aero\PycharmProjects\pythonProject2\CryptoMarket.csv'):
   #   df5.to_csv('CryptoMarket.csv', header='column_names')
@@ -62,9 +77,8 @@ def api_runner():
   #   df5.to_csv('CryptoMarket.csv', mode='a', header=False)
 
 # Running the API runner multiple times
-for i in range(1):
+for i in range(3):
   api_runner()
   print('API runner completed')
-  sleep(60)
-
+  sleep(10)
 exit()
