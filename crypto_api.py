@@ -8,11 +8,10 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 
-# Initialize df as an empty DataFrame globally
 df = pd.DataFrame()
 
 # Running the API runner multiple times
-for i in range(5):
+for i in range(10):
   url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest'
   parameters = {
     'start': '1',
@@ -47,8 +46,8 @@ for i in range(5):
                                          'quote.USD.percent_change_30d', 'quote.USD.percent_change_60d', 'quote.USD.percent_change_90d'],
                                         ['1h','24h','7d','30d','60d','90d'])
 
-    df8 = df[['name','quote.USD.price', 'timestamp']]
-    df8 = df8.query("name == 'Bitcoin'")
+    df_bitcoin = df[['name','quote.USD.price', 'timestamp']]
+    df_bitcoin = df_bitcoin.query("name == 'Bitcoin'")
 
 
   except (ConnectionError, Timeout, TooManyRedirects) as e:
@@ -67,18 +66,29 @@ for i in range(5):
 
   def lineplot():
     sns.set_theme(style='darkgrid')
-    sns.lineplot(x='timestamp', y='quote.USD.price', data = df8)
+    sns.lineplot(x='timestamp', y='quote.USD.price', data = df_bitcoin)
     plt.show()
-  # Export to CSV
-  print(df8)
+  print(df_bitcoin)
 
-  # if not os.path.isfile(r'C:\Users\Aero\PycharmProjects\pythonProject2\CryptoMarket.csv'):
+  # if not os.path.isfile(r'C:\Users\Aero\Documents\GitHub\crypto_api\CryptoMarket.csv'):
   #   df5.to_csv('CryptoMarket.csv', header='column_names')
   # else:
   #   df5.to_csv('CryptoMarket.csv', mode='a', header=False)
 
-
-  lineplot()
   print('API runner completed')
   sleep(5)
+
+print('1. Top 15 cryptocurrency price changes')
+print('2. Bitcoin price changes')
+print('0. Exit program')
+choice = input('Choose which graph you wish to see:\n')
+if choice == '1':
+  catplot()
+elif choice == '2':
+  lineplot()
+elif choice == '0':
+  exit()
+else:
+  print('Incorrect number')
+
 exit()
