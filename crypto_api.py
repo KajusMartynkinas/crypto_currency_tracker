@@ -9,9 +9,11 @@ import matplotlib.pyplot as plt
 
 
 df = pd.DataFrame()
+number = int(input('Choose how many times you wish to reload the data: \n'))
+time = int(input('Choose how often you wish the reload to happen (seconds): \n'))
 
 # Running the API runner multiple times
-for i in range(10):
+for i in range(number):
   url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest'
   parameters = {
     'start': '1',
@@ -32,7 +34,6 @@ for i in range(10):
     df2 = pd.json_normalize(data['data'])
     df2['timestamp'] = pd.to_datetime('now', utc=True)
 
-    # Concatenate df2 to the global df DataFrame
     index = pd.Index(range(120))
 
     df = pd.concat([df, df2], ignore_index=True)
@@ -69,26 +70,28 @@ for i in range(10):
     sns.lineplot(x='timestamp', y='quote.USD.price', data = df_bitcoin)
     plt.show()
   print(df_bitcoin)
+  print(df7)
 
-  # if not os.path.isfile(r'C:\Users\Aero\Documents\GitHub\crypto_api\CryptoMarket.csv'):
-  #   df5.to_csv('CryptoMarket.csv', header='column_names')
-  # else:
-  #   df5.to_csv('CryptoMarket.csv', mode='a', header=False)
+  current_directory = os.getcwd()
+  top15_crypto_file = os.path.join(current_directory, 'top15_crypto.csv')
+  bitcoin_file = os.path.join(current_directory, 'bitcoin.csv')
 
-  print('API runner completed')
-  sleep(5)
+  # Check for 'top15_crypto.csv' and write to it
+  if not os.path.isfile(top15_crypto_file):
+    df7.to_csv(top15_crypto_file, header=True)
+  else:
+    df7.to_csv(top15_crypto_file, mode='a', header=False, index=False)
 
-print('1. Top 15 cryptocurrency price changes')
-print('2. Bitcoin price changes')
-print('0. Exit program')
-choice = input('Choose which graph you wish to see:\n')
-if choice == '1':
+  # Check for 'bitcoin.csv' and write to it
+  if not os.path.isfile(bitcoin_file):
+    df_bitcoin.to_csv(bitcoin_file, header=True)
+  else:
+    df_bitcoin.to_csv(bitcoin_file, mode='a', header=False, index=False)
+
   catplot()
-elif choice == '2':
   lineplot()
-elif choice == '0':
-  exit()
-else:
-  print('Incorrect number')
+  print('API runner completed')
+  sleep(time)
 
+print('Process finished')
 exit()
