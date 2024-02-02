@@ -24,7 +24,7 @@ for i in range(number):
   }
   headers = {
     'Accepts': 'application/json',
-    'X-CMC_PRO_API_KEY': '34bb1490-0c90-484a-835a-d7ecbee4b658',
+    'X-CMC_PRO_API_KEY': '-Insert your API key-',
   }
 
   session = Session()
