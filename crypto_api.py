@@ -6,6 +6,8 @@ import pandas as pd
 from time import sleep
 import seaborn as sns
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+
 
 
 df = pd.DataFrame()
@@ -68,6 +70,11 @@ for i in range(number):
   def lineplot():
     sns.set_theme(style='darkgrid')
     sns.lineplot(x='timestamp', y='quote.USD.price', data = df_bitcoin)
+    plt.gcf().autofmt_xdate()  # Automatically format the x-axis labels to fit better
+    plt.gca().xaxis.set_major_locator(
+      mdates.AutoDateLocator())  # Use the AutoDateLocator to choose the date interval intelligently
+    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))  # Format the date to show only hour and minute
+    plt.xticks(rotation=45, ha='right')
     plt.show()
   print(df_bitcoin)
   print(df7)
